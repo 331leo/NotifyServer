@@ -1,20 +1,37 @@
 import asyncio;
-# 웹 소켓 모듈을 선언한다.
+
 import websockets;
-import discord
-import sys
-import os
+import firebase_admin
+from firebase_admin import credentials
+from firebase_admin import db
+import util
 import json
+
+try:
+    app = firebase_admin.get_app()
+except ValueError as e:
+    cred = credentials.Certificate('bot/etc/leobot-9fbb1-firebase-adminsdk-p6m4j-ff50753b80.json')
+    firebase_admin.initialize_app(cred, {
+        'databaseURL': 'https://leobot-9fbb1.firebaseio.com/'
+    })
+
+global fetched_db
+dir = db.reference(f"ocnotify")
+fetched_db = dir.get()
+
+
+
 async def accept(websocket, path):
   while True:
     # 클라이언트로부터 메시지를 대기한다.
     data = await websocket.recv();
     try:
-      datad = json.loads(data)
-      await websocket.send(f"Dict/ path: {path} , \n학교: {datad['school']}\n반: {datad['class']['num']}\nZoom여부: {datad['class']['isZoom']}\nZoom 링크: {datad['class']['url']}");
+      data = json.loads(data)
+      await util.process_data(data,fetched_db)
+      await websocket.send(f"Dict/ path: {path} , \n학교: {pd(data)}\n반: {datad['class']['num']}\nZoom여부: {datad['class']['isZoom']}\nZoom 링크: {datad['class']['url']}");
     except:
-      await websocket.send(f"No dict/ path: {path} , receive : {data}" );
-    # 클라인언트로 echo를 붙여서 재 전송한다.
+      await websocket.send(f"Wrong Data Format. Contant support@leok.kr " );
+
 
 
 start_server = websockets.serve(accept, '0.0.0.0', 9876);
