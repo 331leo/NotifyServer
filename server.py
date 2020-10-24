@@ -24,13 +24,18 @@ fetched_db = dir.get()
 async def accept(websocket, path):
   while True:
     # 클라이언트로부터 메시지를 대기한다.
-    data = await websocket.recv();
-    try:
-      data = json.loads(data)
-      await util.process_data(data,fetched_db)
-      await websocket.send(f"Dict/ path: {path} , \n학교: {pd(data)}\n반: {datad['class']['num']}\nZoom여부: {datad['class']['isZoom']}\nZoom 링크: {datad['class']['url']}");
-    except:
-      await websocket.send(f"Wrong Data Format. Contant support@leok.kr " );
+    data = await websocket.recv()
+    print(path,data)
+    if path == "/get":
+        try:
+          data = json.loads(data)
+          await websocket.send(str(await util.process_data(data,fetched_db)));
+        except Exception as e:
+          await websocket.send(f"Wrong Data Format. \nContant support@leok.kr\nError Message: {e} " );
+    else:
+
+        await websocket.send("Please Request This on Right Route.")
+
 
 
 
