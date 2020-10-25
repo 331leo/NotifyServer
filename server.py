@@ -36,8 +36,11 @@ async def accept(websocket, path):
             except Exception as e:
                 cf='{"school":"신사중","class":"3-2"}'
                 await websocket.send(f"\nERROR: Wrong Data Format. \nCorrect Formet is \n{cf} \n\nError Message: {e} " )
-                
+
         elif path == "/getalldata":
+                await websocket.send(str(fetched_db))
+
+        elif path == "/getclassdata":
             try:
                 data = json.loads(data)
                 await websocket.send(str(await functions.get_all_data(data, fetched_db)))
@@ -63,7 +66,7 @@ async def accept(websocket, path):
                 cf='{"school":"신사중","class":"3-2"} or {"school":"신사중","class":"3-2","timers":["08:55", "09:50", "10:45", "11:40", "13:15", "14:10", "15:05"]}'
                 await websocket.send(f"\nERROR: Wrong Data Format. \nCorrect Formet is \n{cf} \n\nError Message: {e} " )
         else:
-            await websocket.send("ERROR: Please Request on Right Route.\nRoute List: /getdata, /getalldata, /postdata, /regtimer")
+            await websocket.send("ERROR: Please Request on Right Route.\nRoute List: /getdata, /getclassdata, /getalldata, /postdata, /regtimer")
 
 async def wait_until(runTime):
     startTime = datetime.time(*(map(int, runTime.split(':'))))
