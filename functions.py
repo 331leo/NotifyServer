@@ -3,10 +3,15 @@ import datetime
 from urllib3.util import parse_url
 # zoommtg://zoom.us/join?action=join&confno=98770497040&pwd=a2trcllPclVpRmQrYTJ6R1ZOWGIrdz09
 # https://zoom.us/j/98770497040?pwd=a2trcllPclVpRmQrYTJ6R1ZOWGIrdz09#success
-async def process_data(odata,db):
+
+
+async def get_processed_data(odata,db,index=None):
     school_name = odata['school']
     class_name = odata['class']
-    period = whattime()
+    if index:
+        period = index
+    else:
+        period = whattime()
     try:
         nowdb=db['school'][school_name][class_name][datetime.datetime.now().weekday()][period]
     except:
@@ -21,6 +26,25 @@ async def process_data(odata,db):
         pass
     return nowdb
 
+async def get_all_data(odata,db):
+    school_name = odata['school']
+    class_name = odata['class']
+    try:
+        nowdb=db['school'][school_name][class_name]
+    except Exception as e:
+        return None
+    return nowdb
+async def get_timers(odata,db):
+    school_name = odata['school']
+    try:
+        timers = odata['timers']
+        return timers
+    except:
+        try:
+            timers=db['school'][school_name]['timers']
+        except Exception as e:
+            timers = db['defalut']['timers']
+        return timers
 
 def whattime():
     hour = datetime.datetime.now().hour
