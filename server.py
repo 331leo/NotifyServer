@@ -29,12 +29,23 @@ async def accept(websocket, path):
         print(path,data)
 
 
+
         if path == "/getdata":
             try:
                 data = json.loads(data)
                 await websocket.send(str(await functions.get_processed_data(data,fetched_db)))
             except Exception as e:
                 cf='{"school":"신사중","class":"3-2"}'
+                await websocket.send(f"\nERROR: Wrong Data Format. \nCorrect Formet is \n{cf} \n\nError Message: {e} " )
+
+        elif path == "/postdata":
+            try:
+                data = json.loads(data)
+                fetched_db = await functions.post_data(data, fetched_db)
+                await websocket.send(str(fetched_db))
+
+            except Exception as e:
+                cf='{"school":"신사중","class":"3-2",data:{}}'
                 await websocket.send(f"\nERROR: Wrong Data Format. \nCorrect Formet is \n{cf} \n\nError Message: {e} " )
 
         elif path == "/getalldata":

@@ -26,6 +26,25 @@ async def get_processed_data(odata,db,index=None):
         pass
     return nowdb
 
+async def post_data(odata,db):
+    school_name = odata['school']
+    class_name = odata['class']
+    data = odata['data']
+    try:
+        db.update({"school":{f"{school_name}"}})
+        nowdb=db['school'][school_name][class_name][datetime.datetime.now().weekday()][period]
+    except:
+        return None
+    try:
+        if nowdb["iszoom"] == "True":
+            basezoom = "zoommtg://zoom.us/join?action=join&confno="
+            basezoom += parse_url(nowdb['url']).path.split("/")[2] + "&" + parse_url(nowdb['url']).query
+            nowdb.update({"url":basezoom.replace("%20","")})
+
+    except:
+        pass
+    return nowdb
+
 async def get_all_data(odata,db):
     school_name = odata['school']
     class_name = odata['class']
