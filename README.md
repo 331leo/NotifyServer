@@ -29,16 +29,40 @@ API BASE URL: https://api.leok.kr
 ```
 ### Response (반환)
   - 요청한 학교, 학급에 대한 모든 정보를 반환합니다.
+  - 구조가 복잡합니다, 구조는 
 ```
 [
-    [{
-        "note": "과학책 챙 기기, 줌에서 카메라 켜기, 꼭 온라인 클래스에서 출석체크 하기",
-        "subject": "과학A",
-        "url": "https:\/\/zoom.us\/j\/7841618002?pwd=TXU3Vno5ZzRPNDFGcHMrT2RmQkgwZz09"
-    }, {
-        "note": "사회책 챙기고, 프린트 가져오기",
-        "subject": "사회",
-        "url": "https:\/\/classroom.google.com"
-    }]
+    [ #이 리스트는 하나의 요일을 뜻함 (0번->월, 1번->화, 2번->수 ....)
+    {  #하나의 Dict(JSON)은 한 교시를 뜻함 (0번->1교시,1번->2교시,2번->3교시)
+        "note": #간단한 설명,
+        "subject": #과목명,
+        "url": #줌링크"
+    }, { #2교시
+        "note": #간단한 설명,
+        "subject": #과목명,
+        "url": #줌링크"
+    }, { #3교시
+        "note": #간단한 설명,
+        "subject": #과목명,
+        "url": #줌링크"
+    }, { #4교시
+        "note": "가정책, 프린트 꼭 가져오기",
+        "subject": "가정",
+        "url": "https:\/\/classroom.google.com\/u\/2\/c\/NjY5Njc2MjM0Mzda"
+    }, { #5교시
+        "note": "국어 프린트 챙겨오기",
+        "subject": "국어B",
+        "url": "https:\/\/zoom.us\/j\/99931625319?pwd=MXRleW04R0dsRXJUaENNTS9pTGVCQT09"
+    }, { #6교시
+        "note": "수학책 지참",
+        "subject": "수학",
+        "url": "https:\/\/zoom.us\/j\/3758634096?pwd=cXFIaVZLSk9FVHVZWmJtVTVTT1hMQT09"
+    }],
+    [ #화
+    ~~~
+    ],
+    [ #수
+    ~~~
+    ]
 ]
 ```
