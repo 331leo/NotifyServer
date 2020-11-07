@@ -17,7 +17,7 @@ async def get_processed_data(odata,db,index=None):
     except:
         return None
     try:
-        if nowdb["iszoom"] == "True":
+        if "zoom.us/j" in str(nowdb['url']):
             basezoom = "zoommtg://zoom.us/join?action=join&confno="
             basezoom += parse_url(nowdb['url']).path.split("/")[2] + "&" + parse_url(nowdb['url']).query
             nowdb.update({"url":basezoom.replace("%20","")})
@@ -30,20 +30,22 @@ async def post_data(odata,db):
     school_name = odata['school']
     class_name = odata['class']
     data = odata['data']
+    print(db)
     try:
-        db.update({"school":{f"{school_name}"}})
-        nowdb=db['school'][school_name][class_name][datetime.datetime.now().weekday()][period]
-    except:
-        return None
-    try:
-        if nowdb["iszoom"] == "True":
-            basezoom = "zoommtg://zoom.us/join?action=join&confno="
-            basezoom += parse_url(nowdb['url']).path.split("/")[2] + "&" + parse_url(nowdb['url']).query
-            nowdb.update({"url":basezoom.replace("%20","")})
+        try:
+            db['school'][school_name]
+        except:
+            db['school'].update({f'{school_name}':"NONE"})
+        try:
+            db['school'][school_name][class_name].update(data)
+        except:
+            db['school'][school_name].update({f"{class_name}":data})
 
-    except:
-        pass
-    return nowdb
+        #nowdb=db['school'][school_name][class_name][datetime.datetime.now().weekday()][period]
+    except Exception as e:
+        print(e)
+        return None
+    return db
 
 async def get_all_data(odata,db):
     school_name = odata['school']
