@@ -36,14 +36,14 @@ async def post_data(odata,db):
         try:
             db['school'][school_name]
         except:
-            db['school'].update({f'{school_name}':"NONE"})
+            db['school'].update({f'{school_name}':{}})
         try:
             db['school'][school_name][class_name].update(data)
-            db['school'][school_name][class_name].update({"timers":timers})
+            db['school'][school_name][class_name.split("-")[0]].update({"timers":timers})
         except:
             db['school'][school_name] = dict()
             db['school'][school_name].update({f"{class_name}":data})
-            db['school'][school_name][class_name].update({"timers":timers})
+            db['school'][school_name].update({class_name.split("-")[0]:{"timers":timers}})
 
         #nowdb=db['school'][school_name][class_name][datetime.datetime.now().weekday()][period]
     except Exception as e:
