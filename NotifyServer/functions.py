@@ -30,6 +30,7 @@ async def post_data(odata,db):
     school_name = odata['school']
     class_name = odata['class']
     data = odata['data']
+    timers = odata.get("timers",None)
     print(db)
     try:
         try:
@@ -38,8 +39,11 @@ async def post_data(odata,db):
             db['school'].update({f'{school_name}':"NONE"})
         try:
             db['school'][school_name][class_name].update(data)
+            db['school'][school_name][class_name].update({"timers":timers})
         except:
+            db['school'][school_name] = dict()
             db['school'][school_name].update({f"{class_name}":data})
+            db['school'][school_name][class_name].update({"timers":timers})
 
         #nowdb=db['school'][school_name][class_name][datetime.datetime.now().weekday()][period]
     except Exception as e:
