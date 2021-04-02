@@ -8,10 +8,26 @@ from urllib3.util import parse_url
 async def get_processed_data(odata,db,index=None):
     school_name = odata['school']
     class_name = odata['class']
+    period=0
     if index:
         period = index
+    elif odata.get("index",None):
+        period = int(odata.get("index"))
     else:
-        period = whattime()
+        #period = whattime()
+        t = datetime.datetime.now()
+        now = f"{str(t.hour) if len(str(t.hour)) == 2 else '0'+str(t.hour)}:{str(t.minute) if len(str(t.minute)) == 2 else '0'+str(t.minute)}"
+        try:
+            timers = db['school'].get(school_name,{}).get(class_name.split("-")[0],{}).get('timers',None) if db['school'].get(school_name,{}).get(class_name.split("-")[0],{}).get('timers',None) else db['default']['timers']
+        except Exception as e:
+            timers = db['default'].get("timers")
+            print(f"디폴트타이머 사유: {e}")
+        print(timers)
+        for timer in timers:
+            if timer >= now:
+                period = timers.index(timer)
+                break
+    
     try:
         nowdb=db['school'][school_name][class_name][datetime.datetime.now().weekday()][period]
     except:
@@ -20,7 +36,7 @@ async def get_processed_data(odata,db,index=None):
         if "zoom.us/j" in str(nowdb['url']):
             basezoom = "zoommtg://zoom.us/join?action=join&confno="
             basezoom += parse_url(nowdb['url']).path.split("/")[2] + "&" + parse_url(nowdb['url']).query
-            nowdb.update({"url":basezoom.replace("%20","")})
+            nowdb.update({"url":basezoom.replace("%20","").replace("%0A","")})
 
     except:
         pass

@@ -23,7 +23,6 @@ except ValueError as e:
 print(os.system("nohup python3 NotifyServer/websockettimer.py &"))
 global fetched_db
 dir = db.reference(f"ocnotify")
-global fetched_db
 fetched_db = dir.get()
 '''
 app = Sanic (__name__)
